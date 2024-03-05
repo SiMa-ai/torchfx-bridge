@@ -17,6 +17,10 @@ def argument_handler():
                         help='model format.')
     parser.add_argument('--save_path', type=str, required=True, default=None,
                         help='save path.')
+    parser.add_argument('--simplify', type=str, required=False, default=True,
+                        help='apply TVM simplifications.')
+    parser.add_argument('--save_tvm', type=str, required=False, default=False,
+                        help='save TVM pkl file.')
     
     return parser.parse_args()
 
@@ -39,9 +43,9 @@ if __name__ == '__main__':
     args = argument_handler()
     
     if args.format == 'onnx':
-        tvm_model = onnx_to_tvm(args.model_path)
+        tvm_model = onnx_to_tvm(args.model_path, simplify = args.simplify, save_tvm = args.save_tvm, output_path = args.save_path[:-4]+'_tvm.pkl')
     elif args.format == 'tf':
-        tvm_model = tf_to_tvm(args.model_path)
+        tvm_model = tf_to_tvm(args.model_path, simplify = args.simplify, save_tvm = args.save_tvm, output_path = args.save_path[:-4]+'_tvm.pkl')
 
     torch_fx_model = tvm_to_torchfx(tvm_model)
 
